@@ -33,7 +33,7 @@ class ProductController {
         imagePath,
         price: Number(price),
         category,
-        ingredients: JSON.parse(ingredients),
+        ingredients: ingredients ? JSON.parse(ingredients) : [],
       });
 
       res.status(201).json(product);
@@ -45,6 +45,22 @@ class ProductController {
   async showAll(req: Request, res: Response): Promise<IProduct | undefined> {
     try {
       const products = await Product.find();
+
+      if (!products) {
+        res.status(500).json({ error: "Erro ao buscar seus produtos 🤦‍♂️" });
+        return;
+      }
+
+      res.json(products);
+    } catch (error) {
+      console.error(error, "Erro no servidor ao buscar seus produtos. 🤦‍♂️");
+    }
+  }
+
+  async showByCategories(req: Request, res: Response): Promise<IProduct | undefined> {
+    try {
+      const { categoryId } = req.params
+      const products = await Product.find().where('category').equals(categoryId);
 
       if (!products) {
         res.status(500).json({ error: "Erro ao buscar seus produtos 🤦‍♂️" });

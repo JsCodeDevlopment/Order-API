@@ -9,9 +9,9 @@ mongoose
     console.log('👌 Mongodb connection started!')
     const app = express();
 
-    app.use('/uploads', express.static(path.resolve(__dirname, "..", "uploads")))
     app.use(express.json())
     app.use(router)
+    app.use('/uploads', express.static(path.resolve(__dirname, "..", "uploads")))
 
     app.listen(3333, () => {
       console.log("🏴‍☠️ Server is running on http://localhost:3333");

@@ -1,64 +1,60 @@
-// import { Request, Response } from "express";
-// import { ICategory } from "../../interfaces/ICategory";
-// import { Category } from "../models/Category";
+import { Request, Response } from "express";
+import { IOrder } from "../../interfaces/IOrder";
+import { Order } from "../models/Order";
 
-// class CategoryController {
-//   async create(req: Request, res: Response): Promise<ICategory | undefined> {
-//     try {
-//       const { name, icon } = req.body as ICategory;
-//       if (!name && !icon) {
-//         res.status(400).json({
-//           error: "Nome e/ou icone ausente, esses campos são obrigatórios 🤦‍♂️",
-//         });
-//       }
+class OrderController {
+  async create(req: Request, res: Response): Promise<IOrder | void> {
+    try {
+      const { table, status, createdAt, products } = req.body
 
-//       const categoryExists = await Category.findOne({ name });
-//       if (categoryExists) {
-//         res.status(400).json({
-//           error: "A categoria que você está tentando criar já existe. 🤦‍♂️",
-//         });
-//         return;
-//       }
+      if (!table && !products && !status) {
+        res.status(400).json({
+          error:
+            "Mesa, status e/ou produtos ausentes, esses campos são obrigatórios 🤦‍♂️",
+        });
+      }
 
-//       const category = await Category.create({
-//         name,
-//         icon,
-//       });
+      const order = await Order.create({
+        table,
+        status,
+        createdAt,
+        products,
+      });
 
-//       res.json(category);
-//     } catch (error) {
-//       console.error(error, "Erro na criação dessa categoria. 🤦‍♂️");
-//     }
-//   }
+      res.json(order);
+    } catch (error) {
+      console.error(error, "Erro na criação dessa categoria. 🤦‍♂️");
+    }
+  }
 
-//   async showAll(req: Request, res: Response): Promise<ICategory | undefined> {
-//     try {
-//       const categories = await Category.find();
+    async showAll(req: Request, res: Response): Promise<IOrder | undefined> {
+      try {
+        const orders = await Order.find();
 
-//       if (!categories) {
-//         res.status(500).json({ error: "Erro ao buscar suas categorias 🤦‍♂️" });
-//         return;
-//       }
+        if (!orders) {
+          res.status(500).json({ error: "Erro ao buscar seus pedidos 🤦‍♂️" });
+          return;
+        }
 
-//       res.json(categories);
-//     } catch (error) {
-//       console.error(error, "Erro no servidor ao buscar suas categorias. 🤦‍♂️");
-//     }
-//   }
+        res.json(orders);
+      } catch (error) {
+        console.error(error, "Erro no servidor ao buscar seus pedidos. 🤦‍♂️");
+      }
+    }
 
-//   async delete(req: Request, res: Response): Promise<void> {
-//     try {
-//       const { id } = req.params;
-//       const deleted = await Category.findByIdAndDelete( id );
+    async delete(req: Request, res: Response): Promise<void> {
+      try {
+        const { id } = req.params;
+        const deleted = await Order.findByIdAndDelete( id );
 
-//       if(deleted){
-//         res.status(200).json()
-//       }
+        if(deleted){
+          res.status(200).json()
+        }
 
-//     } catch (error) {
-//       console.error(error, "Erro no servidor ao deletar sua categoria. 🤦‍♂️");
-//     }
-//   }
-// }
+      } catch (error) {
+        console.error(error, "Erro no servidor ao deletar seu pedido. 🤦‍♂️");
+      }
+    }
+}
 
-// export const categoryController = new CategoryController();
+export const orderController = new OrderController();
