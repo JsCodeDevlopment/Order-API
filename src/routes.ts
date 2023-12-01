@@ -43,7 +43,7 @@ router.delete("/products/:id", productController.delete);
 router.post("/orders", orderController.create);
 // listar pedidos ✔
 router.get("/orders", orderController.showAll);
-// mudar status dos pedidos ❌
-router.patch("/orders", orderController.showAll);
+// mudar status dos pedidos ✔
+router.patch("/orders/:orderId", orderController.change);
 // deletar/cancelar pedidos ✔
 router.delete("/orders/:id", orderController.delete);
