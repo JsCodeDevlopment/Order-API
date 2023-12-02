@@ -4,6 +4,7 @@ import { categoryController } from "./app/controllers/CategoryController";
 import { productController } from "./app/controllers/ProductController";
 import { orderController } from "./app/controllers/OrderController";
 import multer from "multer";
+import { registerController } from "./app/controllers/RegisterController";
 
 export const router = Router();
 
@@ -13,7 +14,7 @@ const upload = multer({
       callback(null, path.resolve(__dirname, "..", "uploads"));
     },
     filename(req, file, callback) {
-        callback(null, `${Date.now()}-${file.originalname}`)
+      callback(null, `${Date.now()}-${file.originalname}`);
     },
   }),
 });
@@ -34,7 +35,7 @@ router.post("/products", upload.single("image"), productController.create);
 // listar produtos ✔
 router.get("/products", productController.showAll);
 // listar produtos pela categoria ✔
-router.get("/products/:categoryId/products", productController.showByCategories);
+router.get("/products/:categoryId/products",productController.showByCategories);
 // deletar produto ✔
 router.delete("/products/:id", productController.delete);
 
@@ -47,3 +48,17 @@ router.get("/orders", orderController.showAll);
 router.patch("/orders/:orderId", orderController.change);
 // deletar/cancelar pedidos ✔
 router.delete("/orders/:id", orderController.delete);
+
+// ----ROTAS REGISTER----
+// criar usuário ✔
+router.post("/register", upload.single("image"), registerController.create);
+// criar atualizar dados do usuário ✔
+router.get("/register", registerController.showAll);
+// criar recuperar senha ❌
+router.get("/register", registerController.create);
+// criar deletar usuário ❌
+router.get("/register", registerController.create);
+
+// ----ROTAS LOGIN----
+// autenticar login ❌
+router.get("/login", registerController.create);

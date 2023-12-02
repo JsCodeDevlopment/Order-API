@@ -22,7 +22,7 @@ class CategoryController {
 
       const category = await Category.create({
         name,
-        icon,
+        icon
       });
 
       res.json(category);
