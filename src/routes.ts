@@ -5,6 +5,9 @@ import { productController } from "./app/controllers/ProductController";
 import { orderController } from "./app/controllers/OrderController";
 import multer from "multer";
 import { registerController } from "./app/controllers/RegisterController";
+import { AuthMiddleware } from "./app/middlewares/authMiddleware";
+import { loginController } from "./app/controllers/LoginController";
+import { AdiminMiddleware } from "./app/middlewares/admMiddleware";
 
 export const router = Router();
 
@@ -52,13 +55,13 @@ router.delete("/orders/:id", orderController.delete);
 // ----ROTAS REGISTER----
 // criar usuário ✔
 router.post("/register", upload.single("image"), registerController.create);
-// criar atualizar dados do usuário ✔
+// atualizar dados do usuário ✔
 router.get("/register", registerController.showAll);
-// criar recuperar senha ❌
+// recuperar senha ❌
 router.get("/register", registerController.create);
-// criar deletar usuário ❌
-router.get("/register", registerController.create);
+// deletar usuário ✔
+router.delete("/register/:id", AuthMiddleware, AdiminMiddleware, registerController.delete);
 
 // ----ROTAS LOGIN----
-// autenticar login ❌
-router.get("/login", registerController.create);
+// autenticar login ✔
+router.get("/login", loginController.login);

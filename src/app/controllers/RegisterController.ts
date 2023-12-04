@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { IRegister } from "../../interfaces/IRegister";
 import { Register } from "../models/Register";
+import bcrypt from "bcrypt";
 
 class RegisterController {
   async create(req: Request, res: Response): Promise<IRegister | undefined> {
@@ -27,10 +28,12 @@ class RegisterController {
         return;
       }
 
+      const hashedPassword = await bcrypt.hash(password, 12);
+
       const user = await Register.create({
         name,
         email,
-        password,
+        password: hashedPassword,
         imagePath,
         rule,
       });
@@ -46,13 +49,30 @@ class RegisterController {
       const users = await Register.find();
 
       if (!users) {
-        res.status(500).json({ error: "Erro ao buscar os usuários 🤦‍♂️" });
+        res.status(400).json({ error: "Erro ao buscar os usuários 🤦‍♂️" });
         return;
       }
 
       res.json(users);
     } catch (error) {
       console.error(error, "Erro no servidor ao buscar os usuários. 🤦‍♂️");
+    }
+  }
+
+  async delete(req: Request, res: Response): Promise<void | undefined> {
+    try {
+      const { id } = req.params
+
+      const deleteUser = await Register.findById(id)
+      if(!deleteUser){
+        res.status(401).json({ error: 'Usuário que quer deletar não existe.' })
+        return
+      }
+
+      await Register.findByIdAndDelete(id)
+      res.status(200).json()
+    } catch (error) {
+      console.error(error, "Erro no servidor ao apagar o usuário");
     }
   }
 }
