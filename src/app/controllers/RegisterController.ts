@@ -62,6 +62,7 @@ class RegisterController {
   async delete(req: Request, res: Response): Promise<void | undefined> {
     try {
       const { id } = req.params
+      const currentUserId = req.user.id
 
       const deleteUser = await Register.findById(id)
       if(!deleteUser){
@@ -69,10 +70,23 @@ class RegisterController {
         return
       }
 
+      if(currentUserId === id){
+        res.status(401).json({ error: 'Você não pode deletar a si próprio.' })
+        return
+      }
+
       await Register.findByIdAndDelete(id)
       res.status(200).json()
     } catch (error) {
       console.error(error, "Erro no servidor ao apagar o usuário");
+    }
+  }
+
+  async recoverKey(req: Request, res: Response){
+    try{
+
+    } catch (error) {
+      console.error(error, 'Erro no servidor ao recuperar senha.')
     }
   }
 }

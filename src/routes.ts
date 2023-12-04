@@ -53,7 +53,7 @@ router.patch("/orders/:orderId", orderController.change);
 router.delete("/orders/:id", orderController.delete);
 
 // ----ROTAS REGISTER----
-// criar usuário ✔
+// criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ❌
 router.post("/register", upload.single("image"), registerController.create);
 // atualizar dados do usuário ✔
 router.get("/register", registerController.showAll);

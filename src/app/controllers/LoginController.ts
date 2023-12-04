@@ -10,13 +10,13 @@ class LoginController {
 
       const user = await Register.findOne({ email })
       if (!user) {
-        res.status(401).json({ message: "Usuário inexistente." });
+        res.status(401).json({ message: "Email inexistente." });
         return;
       }
 
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        res.status(401).json({ message: "Acesso negado." });
+        res.status(401).json({ message: "Senha Inválida." });
       } else {
         const token = jwt.sign({id: user.id}, "secretpassword");
         res.status(200).json({ token });
