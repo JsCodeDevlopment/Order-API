@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { IRegister } from "../../interfaces/IRegister";
 import { Register } from "../models/Register";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import nodemailer from 'nodemailer'
+import { mailSettings } from "../settings/MailSettings";
+
+export const transporter = nodemailer.createTransport(mailSettings)
 
 class RegisterController {
   async create(req: Request, res: Response): Promise<IRegister | undefined> {
@@ -29,6 +34,7 @@ class RegisterController {
       }
 
       const hashedPassword = await bcrypt.hash(password, 12);
+      const verificationToken = jwt.sign({ email }, "token-verification", { expiresIn: '1d' })
 
       const user = await Register.create({
         name,
@@ -36,7 +42,16 @@ class RegisterController {
         password: hashedPassword,
         imagePath,
         rule,
+        verificationToken
       });
+      await user.save()
+
+      const verificationLink = `${process.env.BASE_URL}/verify/${verificationToken}`
+      await transporter.sendMail({
+        to: email,
+        subject: "Verifique seu email",
+        text: `Clique no seguinte link para verificar seu e-mail: ${verificationLink}`
+      })
 
       res.status(201).json(user);
     } catch (error) {

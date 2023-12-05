@@ -53,15 +53,17 @@ router.patch("/orders/:orderId", orderController.change);
 router.delete("/orders/:id", orderController.delete);
 
 // ----ROTAS REGISTER----
-// criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ❌
+// criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ✔
 router.post("/register", upload.single("image"), registerController.create);
 // atualizar dados do usuário ✔
 router.get("/register", registerController.showAll);
-// recuperar senha ❌
-router.get("/register", registerController.create);
 // deletar usuário ✔
 router.delete("/register/:id", AuthMiddleware, AdiminMiddleware, registerController.delete);
 
 // ----ROTAS LOGIN----
 // autenticar login ✔
 router.get("/login", loginController.login);
+// esqueci minha senha ✔
+router.post("/forgot-password", loginController.recover)
+// recuperar senha ✔
+router.post("/reset-password/:token", loginController.reset);
