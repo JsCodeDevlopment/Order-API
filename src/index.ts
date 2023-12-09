@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from "express";
 import mongoose from "mongoose";
 import path from "node:path";

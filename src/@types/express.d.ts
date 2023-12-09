@@ -3,6 +3,7 @@ declare namespace Express {
     user: {
       id: string
       rule: string
+      decoded: string | JwtPayload
     };
   }
 }

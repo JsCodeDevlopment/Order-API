@@ -5,5 +5,7 @@ export const mailSettings: IMailSettings = {
     auth: {
         user: process.env.EMAIL,
         pass: process.env.PASS
-    }
+    },
+    secure: true,
+    port: 587
 }
