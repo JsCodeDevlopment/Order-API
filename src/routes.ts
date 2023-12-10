@@ -63,6 +63,8 @@ router.delete("/register/:id", AuthMiddleware, AdiminMiddleware, registerControl
 // ----ROTAS LOGIN----
 // autenticar login ✔
 router.get("/login", loginController.login);
+// verificação do email ✔
+router.get("/verify/:token", loginController.verify);
 // esqueci minha senha ✔
 router.post("/forgot-password", loginController.recover)
 // recuperar senha ✔

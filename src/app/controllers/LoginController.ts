@@ -3,6 +3,7 @@ import { Register } from "../models/Register";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { transporter } from "./RegisterController";
+import { IRegister } from "../../interfaces/IRegister";
 
 
 class LoginController {
@@ -25,6 +26,21 @@ class LoginController {
       }
     } catch (error) {
       console.error(error, "Erro no servidor ao fazer o login.");
+    }
+  }
+
+  async verify (req: Request, res: Response): Promise<void> {
+    try {
+      const verificationToken  = req.params.token
+
+      const user = await Register.findOne({ verificationToken }) as IRegister
+      if (user.verificationToken !== verificationToken) {
+        res.status(401).json({ message: 'Falha na verificação. Código de verificação inválido.' })
+      }
+
+      res.status(200).json({ message: 'Sucesso! agora só logar e usar...' })
+    } catch (error) {
+      console.error(error, 'Erro no servidor ao verificar o email.')
     }
   }
 
