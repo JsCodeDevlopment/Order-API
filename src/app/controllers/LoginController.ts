@@ -31,7 +31,7 @@ class LoginController {
 
   async verify (req: Request, res: Response): Promise<void> {
     try {
-      const verificationToken  = req.params.token
+      const verificationToken = req.params.token
 
       const user = await Register.findOne({ verificationToken }) as IRegister
       if (user.verificationToken !== verificationToken) {
