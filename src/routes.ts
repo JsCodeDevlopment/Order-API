@@ -55,8 +55,6 @@ router.delete("/orders/:id", orderController.delete);
 // ----ROTAS REGISTER----
 // criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ✔
 router.post("/register", upload.single("image"), registerController.create);
-// verificação do email ✔
-router.get("/verify/:token", loginController.verify);
 // atualizar dados do usuário ✔
 router.get("/register", registerController.showAll);
 // deletar usuário ✔
@@ -65,6 +63,8 @@ router.delete("/register/:id", AuthMiddleware, AdiminMiddleware, registerControl
 // ----ROTAS LOGIN----
 // autenticar login ✔
 router.get("/login", loginController.login);
+// verificação do email ✔
+router.get("/verify/:token", loginController.verify);
 // esqueci minha senha ✔
 router.post("/forgot-password", loginController.recover)
 // recuperar senha ✔

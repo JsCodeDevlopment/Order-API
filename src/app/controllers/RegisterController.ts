@@ -25,7 +25,7 @@ class RegisterController {
         });
       }
 
-      const userExists = await Register.findOne({ email });
+      const userExists = await Register.findOne({ email }) as IRegister
       if (userExists) {
         res.status(400).json({
           error: "O email que você está tentando cadastrar já existe. 🤦‍♂️",
