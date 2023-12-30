@@ -57,10 +57,15 @@ class ProductController {
     }
   }
 
-  async showByCategories(req: Request, res: Response): Promise<IProduct | undefined> {
+  async showByCategories(
+    req: Request,
+    res: Response
+  ): Promise<IProduct | undefined> {
     try {
-      const { categoryId } = req.params
-      const products = await Product.find().where('category').equals(categoryId);
+      const { categoryId } = req.params;
+      const products = await Product.find()
+        .where("category")
+        .equals(categoryId);
 
       if (!products) {
         res.status(500).json({ error: "Erro ao buscar seus produtos 🤦‍♂️" });
@@ -76,12 +81,18 @@ class ProductController {
   async delete(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const deleted = await Product.findByIdAndDelete( id );
+      const deleted = await Product.findByIdAndDelete(id);
 
-      if(deleted){
-        res.status(200).json()
+      if (!deleted) {
+        res
+          .status(400)
+          .json({
+            error:
+              "O Produto que você está tentando excluir não existe ou não foi encontrado.",
+          });
+      } else {
+        res.status(200).json();
       }
-
     } catch (error) {
       console.error(error, "Erro no servidor ao deletar seu produto. 🤦‍♂️");
     }
