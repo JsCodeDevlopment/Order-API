@@ -5,9 +5,9 @@ import { Order } from "../models/Order";
 class OrderController {
   async create(req: Request, res: Response): Promise<IOrder | void> {
     try {
-      const { table, status, createdAt, products } = req.body;
+      const { table, createdAt, products } = req.body;
 
-      if (!table && !products && !status) {
+      if (!table && !products) {
         res.status(400).json({
           error:
             "Mesa, status e/ou produtos ausentes, esses campos são obrigatórios 🤦‍♂️",
@@ -16,7 +16,7 @@ class OrderController {
 
       const order = await Order.create({
         table,
-        status,
+        status: "WAITING",
         createdAt,
         products,
       });
