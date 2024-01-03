@@ -18,7 +18,7 @@ export const Register = model<IRegister>(
     },
     imagePath: {
       type: String,
-      required: true,
+      required: false,
     },
     rule: {
       type: String,

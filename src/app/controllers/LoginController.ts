@@ -31,13 +31,22 @@ class LoginController {
 
   async verify (req: Request, res: Response): Promise<void> {
     try {
-      const verificationToken = req.params.token
+      const token = req.params.token
+      let decoded
 
-      const user = await Register.findOne({ verificationToken }) as IRegister
-      if (user.verificationToken !== verificationToken) {
+      try {
+        decoded = jwt.verify(token, "token-verification") as {email: string}
+      }catch {
         res.status(401).json({ message: 'Falha na verificação. Código de verificação inválido.' })
+        return
       }
-
+      
+      const user = await Register.findOne({ verificationToken: token })
+      if (user?.email !== decoded.email) {
+        res.status(401).json({ message: 'Falha na verificação. Código de verificação inválido.' })
+        return
+      }
+      await Register.updateOne({ _id: user._id}, {isVerified: true})
       res.status(200).json({ message: 'Sucesso! agora só logar e usar...' })
     } catch (error) {
       console.error(error, 'Erro no servidor ao verificar o email.')

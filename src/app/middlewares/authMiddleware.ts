@@ -2,11 +2,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { Register } from "../models/Register";
 
-export async function AuthMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function AuthMiddleware( req: Request, res: Response, next: NextFunction) {
   const authorization = req.header("Authorization");
   if (!authorization) {
     res.status(401).json({ message: "Token não fornecido." });
@@ -20,6 +16,11 @@ export async function AuthMiddleware(
 
     if (!user) {
       res.status(401).json({ message: "Usuário não encontrado." });
+      return
+    }
+
+    if (!user.isVerified){
+      res.status(401).json({message: "Necessário confirmar autenticação."})
       return
     }
 

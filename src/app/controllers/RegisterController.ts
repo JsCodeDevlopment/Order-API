@@ -14,10 +14,6 @@ class RegisterController {
       const { name, email, password, rule } = req.body as IRegister;
       const imagePath = req.file?.filename;
 
-      if (!imagePath) {
-        console.log("o imagePath tá vazio mano");
-      }
-
       if (!name && !email && !password && !rule) {
         res.status(400).json({
           error:
@@ -46,11 +42,11 @@ class RegisterController {
       });
       await user.save()
 
-      const verificationLink = `${process.env.BASE_URL}/verify/${verificationToken}`
+      const verificationLink = `${process.env.FRONT_BASE_URL}/verified/${verificationToken}`
       await transporter.sendMail({
         to: email,
         subject: "Verifique seu email",
-        text: `Clique no seguinte link para verificar seu e-mail: ${verificationLink}`
+        text: `Parabéns Você conseguiu criar sua conta! Clique no link para verificar seu e-mail e usar sua conta. ${verificationLink}`
       })
 
       res.status(201).json(user);
