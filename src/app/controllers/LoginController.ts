@@ -3,8 +3,6 @@ import { Register } from "../models/Register";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { transporter } from "./RegisterController";
-import { IRegister } from "../../interfaces/IRegister";
-
 
 class LoginController {
   async login(req: Request, res: Response): Promise<undefined | void> {
@@ -29,51 +27,63 @@ class LoginController {
     }
   }
 
-  async verify (req: Request, res: Response): Promise<void> {
+  async verify(req: Request, res: Response): Promise<void> {
     try {
-      const token = req.params.token
-      let decoded
+      const token = req.params.token;
+      let decoded;
 
       try {
-        decoded = jwt.verify(token, "token-verification") as {email: string}
-      }catch {
-        res.status(401).json({ message: 'Falha na verificação. Código de verificação inválido.' })
-        return
+        decoded = jwt.verify(token, "token-verification") as { email: string };
+      } catch {
+        res.status(401).json({
+            message: "Falha na verificação. Código de verificação inválido.",
+          });
+        return;
       }
-      
-      const user = await Register.findOne({ verificationToken: token })
+
+      const user = await Register.findOne({ verificationToken: token });
       if (user?.email !== decoded.email) {
-        res.status(401).json({ message: 'Falha na verificação. Código de verificação inválido.' })
-        return
+        res
+          .status(401)
+          .json({
+            message: "Falha na verificação. Código de verificação inválido.",
+          });
+        return;
       }
-      await Register.updateOne({ _id: user._id}, {isVerified: true})
-      res.status(200).json({ message: 'Sucesso! agora só logar e usar...' })
+      await Register.updateOne({ _id: user._id }, { isVerified: true });
+      const accessToken = jwt.sign({ id: user.id }, "secretpassword");
+      res.status(200).json({ token: accessToken });
     } catch (error) {
-      console.error(error, 'Erro no servidor ao verificar o email.')
+      console.error(error, "Erro no servidor ao verificar o email.");
     }
   }
 
   async recover(req: Request, res: Response) {
     try {
-      const { email } = req.body
-      const user = await Register.findOne({ email })
-      if(!user) {
-        return res.status(404).json({ message: "Usuário não encontrado." })
+      const { email } = req.body;
+      const user = await Register.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado." });
       }
 
-      const resetPasswordToken = jwt.sign({ email }, "token-to-rever", { expiresIn: '1h' })
-      user.resetPasswordToken = resetPasswordToken
-      user.resetPasswordExpires = new Date(Date.now() + 1000 * 3600)
-      await user.save()
+      const resetPasswordToken = jwt.sign({ email }, "token-to-rever", {
+        expiresIn: "1h",
+      });
+      user.resetPasswordToken = resetPasswordToken;
+      user.resetPasswordExpires = new Date(Date.now() + 1000 * 3600);
+      await user.save();
 
-      const resetLink = `http://seu-url-do-aplicativo/reset-password/${resetPasswordToken}`
+      const resetLink = `http://seu-url-do-aplicativo/reset-password/${resetPasswordToken}`;
       await transporter.sendMail({
         to: email,
-        subject: 'Redefinir Senha',
-        text: `Clique no seguinte link para redefinir sua senha: ${resetLink}`
-      })
+        subject: "Redefinir Senha",
+        text: `Clique no seguinte link para redefinir sua senha: ${resetLink}`,
+      });
 
-      res.json({ message: "Um e-mail foi enviado com instruções para redefinir sua senha." })
+      res.json({
+        message:
+          "Um e-mail foi enviado com instruções para redefinir sua senha.",
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Erro interno do servidor" });
