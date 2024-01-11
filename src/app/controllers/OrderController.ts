@@ -47,7 +47,7 @@ class OrderController {
 
       const order = await Order.findByIdAndUpdate(orderId, { status });
 
-      res.sendStatus(204);
+      res.sendStatus(204)
     } catch (error) {
       console.error(error, "Erro na alteração desse pedido. 🤦‍♂️");
     }
