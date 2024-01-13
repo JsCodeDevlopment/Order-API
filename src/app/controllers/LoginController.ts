@@ -9,6 +9,10 @@ class LoginController {
     try {
       const { email, password } = req.body;
 
+      if(!email && !password){
+        res.status(401).json({ message: "Email e/ou senha ausentes. Esses campos são obrigatórios!" })
+      }
+
       const user = await Register.findOne({ email });
       if (!user) {
         res.status(401).json({ message: "Email inexistente." });
