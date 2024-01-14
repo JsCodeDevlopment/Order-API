@@ -24,7 +24,7 @@ class LoginController {
         res.status(401).json({ message: "Senha Inválida." });
       } else {
         const token = jwt.sign({ id: user.id }, "secretpassword");
-        res.status(200).json({ token });
+        res.status(200).json({ token, user });
       }
     } catch (error) {
       console.error(error, "Erro no servidor ao fazer o login.");
