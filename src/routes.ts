@@ -7,7 +7,8 @@ import multer from "multer";
 import { registerController } from "./app/controllers/RegisterController";
 import { AuthMiddleware } from "./app/middlewares/authMiddleware";
 import { loginController } from "./app/controllers/LoginController";
-import { AdiminMiddleware } from "./app/middlewares/admMiddleware";
+import { AdminMiddleware } from "./app/middlewares/admMiddleware";
+import { userController } from "./app/controllers/UserController";
 
 export const router = Router();
 
@@ -52,13 +53,17 @@ router.patch("/orders/:orderId", orderController.change);
 // deletar/cancelar pedidos ✔
 router.delete("/orders/:id", orderController.delete);
 
+// ----ROTAS USERS----
+// criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ✔
+router.get("/me", AuthMiddleware, userController.me);
+
 // ----ROTAS REGISTER----
 // criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ✔
 router.post("/register", upload.single("image"), registerController.create);
 // atualizar dados do usuário ✔
 router.get("/register", registerController.showAll);
 // deletar usuário ✔
-router.delete("/register/:id", AuthMiddleware, AdiminMiddleware, registerController.delete);
+router.delete("/register/:id", AuthMiddleware, AdminMiddleware, registerController.delete);
 
 // ----ROTAS LOGIN----
 // autenticar login ✔
