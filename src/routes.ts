@@ -54,7 +54,7 @@ router.patch("/orders/:orderId", orderController.change);
 router.delete("/orders/:id", orderController.delete);
 
 // ----ROTAS USERS----
-// criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ✔
+// rota para autenticar quem logar ✔
 router.get("/me", AuthMiddleware, userController.me);
 
 // ----ROTAS REGISTER----

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { IProduct } from "../../interfaces/IProduct";
 import { Product } from "../models/Product";
+import { Category } from "../models/Category";
 
 class ProductController {
   async create(req: Request, res: Response): Promise<IProduct | undefined> {
@@ -19,6 +20,8 @@ class ProductController {
         });
       }
 
+      const selectedCategory = await Category.findById(category)
+
       const productExists = await Product.findOne({ name });
       if (productExists) {
         res.status(400).json({
@@ -36,7 +39,7 @@ class ProductController {
         ingredients: ingredients ? JSON.parse(ingredients) : [],
       });
 
-      res.status(201).json(product);
+      res.status(201).json({product, selectedCategory});
     } catch (error) {
       console.error(error, "Erro na criação dessa categoria. 🤦‍♂️");
     }
