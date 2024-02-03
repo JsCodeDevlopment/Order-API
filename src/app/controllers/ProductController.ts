@@ -13,10 +13,10 @@ class ProductController {
         console.log("o imagePath tá vazio mano");
       }
 
-      if (!name && !price && !ingredients) {
+      if (!name && !price) {
         res.status(400).json({
           error:
-            "Nome, ingredientes e/ou preço ausentes, esses campos são obrigatórios 🤦‍♂️",
+            "Nome ou preço ausentes, esses campos são obrigatórios 🤦‍♂️",
         });
       }
 

@@ -7,7 +7,7 @@ export const Product = model('Product', new Schema({
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     imagePath: {
         type: String,
@@ -21,14 +21,14 @@ export const Product = model('Product', new Schema({
         type: [{
             name: {
                 type: String,
-                required: true
+                required: false
             },
             icon: {
                 type: String,
-                required: true
+                required: false
             }
         }],
-        required: true
+        required: false
     },
     category: {
         type: Schema.Types.ObjectId,
