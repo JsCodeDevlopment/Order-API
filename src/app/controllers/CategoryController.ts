@@ -46,6 +46,20 @@ class CategoryController {
     }
   }
 
+  async change(req: Request, res: Response): Promise<void> {
+    try{
+      const { categoryId } = req.params;
+      const { icon, name } = req.body;
+
+      await Category.findByIdAndUpdate(categoryId, { icon, name });
+      
+      res.status(200).json()
+
+    } catch (error) {
+      console.error(error, "Erro no servidor ao editar categoria.");
+    }
+  }
+
   async delete(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;

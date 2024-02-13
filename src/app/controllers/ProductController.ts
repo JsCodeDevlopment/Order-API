@@ -20,8 +20,6 @@ class ProductController {
         });
       }
 
-      const selectedCategory = await Category.findById(category)
-
       const productExists = await Product.findOne({ name });
       if (productExists) {
         res.status(400).json({
@@ -39,7 +37,7 @@ class ProductController {
         ingredients: ingredients ? JSON.parse(ingredients) : [],
       });
 
-      res.status(201).json({product, selectedCategory});
+      res.status(201).json(await Product.findById(product._id).populate("category").exec());
     } catch (error) {
       console.error(error, "Erro na criação dessa categoria. 🤦‍♂️");
     }

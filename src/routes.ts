@@ -28,6 +28,8 @@ const upload = multer({
 // ----ROTAS CATEGORIA----
 // criar categoria ✔
 router.post("/categories", categoryController.create);
+// editar categoria ✔
+router.patch("/categories/:categoryId", categoryController.change);
 // listar categorias ✔
 router.get("/categories", categoryController.showAll);
 // deletar categoria ✔
