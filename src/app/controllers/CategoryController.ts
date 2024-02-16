@@ -51,6 +51,13 @@ class CategoryController {
       const { categoryId } = req.params;
       const { icon, name } = req.body;
 
+      const existsCategory = await Category.findOne({name})
+      
+      if (existsCategory){
+        res.status(500).json({error: "Você está tentando colocar um nome que já existe em suas categorias!"})
+        return
+      }
+
       await Category.findByIdAndUpdate(categoryId, { icon, name });
       
       res.status(200).json()
