@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { IProduct } from "../../interfaces/IProduct";
 import { Product } from "../models/Product";
-import { Category } from "../models/Category";
+import fs from "fs/promises";
+import path from "path";
 
 class ProductController {
   async create(req: Request, res: Response): Promise<IProduct | undefined> {
@@ -15,8 +16,7 @@ class ProductController {
 
       if (!name && !price) {
         res.status(400).json({
-          error:
-            "Nome ou preço ausentes, esses campos são obrigatórios 🤦‍♂️",
+          error: "Nome ou preço ausentes, esses campos são obrigatórios 🤦‍♂️",
         });
       }
 
@@ -37,7 +37,9 @@ class ProductController {
         ingredients: ingredients ? JSON.parse(ingredients) : [],
       });
 
-      res.status(201).json(await Product.findById(product._id).populate("category").exec());
+      res
+        .status(201)
+        .json(await Product.findById(product._id).populate("category").exec());
     } catch (error) {
       console.error(error, "Erro na criação dessa categoria. 🤦‍♂️");
     }
@@ -58,10 +60,7 @@ class ProductController {
     }
   }
 
-  async showByCategories(
-    req: Request,
-    res: Response
-  ): Promise<IProduct | undefined> {
+  async showByCategories( req: Request, res: Response): Promise<IProduct | undefined> {
     try {
       const { categoryId } = req.params;
       const products = await Product.find()
@@ -82,16 +81,21 @@ class ProductController {
   async delete(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+
+      const productImage = await Product.findById(id);
+
       const deleted = await Product.findByIdAndDelete(id);
 
       if (!deleted) {
-        res
-          .status(400)
-          .json({
-            error:
-              "O Produto que você está tentando excluir não existe ou não foi encontrado.",
-          });
+        res.status(400).json({
+          error:
+            "O Produto que você está tentando excluir não existe ou não foi encontrado.",
+        });
       } else {
+        const image = productImage?.imagePath as string;
+        const caminhoImagem = path.join(__dirname, "../../../uploads", image);
+        await fs.unlink(caminhoImagem);
+
         res.status(200).json();
       }
     } catch (error) {
