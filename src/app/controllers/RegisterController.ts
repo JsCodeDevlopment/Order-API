@@ -4,6 +4,8 @@ import { Register } from "../models/Register";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
+import fs from "fs/promises";
+import path from "path";
 import { mailSettings } from "../settings/MailSettings";
 
 export const transporter = nodemailer.createTransport(mailSettings);
@@ -107,6 +109,10 @@ class RegisterController {
       }
 
       await Register.findByIdAndDelete(id);
+      const image = deleteUser.imagePath
+      const caminhoImagem = path.join(__dirname, "../../../uploads", image);
+      await fs.unlink(caminhoImagem);
+
       res.status(200).json();
     } catch (error) {
       console.error(error, "Erro no servidor ao apagar o usuário");
