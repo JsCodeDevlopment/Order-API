@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { ICategory } from "../../interfaces/ICategory";
+import { ICategory, IFullCategory } from "../../interfaces/ICategory";
 import { Category } from "../models/Category";
+import { Product } from "../models/Product";
 
 class CategoryController {
   async create(req: Request, res: Response): Promise<ICategory | undefined> {
@@ -22,7 +23,7 @@ class CategoryController {
 
       const category = await Category.create({
         name,
-        icon
+        icon,
       });
 
       res.json(category);
@@ -46,22 +47,40 @@ class CategoryController {
     }
   }
 
+  async showWithProducts(req: Request, res: Response): Promise<IFullCategory | void> {
+    try {
+      const categories = await Category.find();
+      const categoriesWithProductInfo = await Promise.all(categories.map(async (category) => {
+          const products = await Product.find({ category: category._id }, '_id name imagePath');
+          const productCount = products.length;
+          return { category: category.toObject(), productCount, products };
+      }));
+      res.json(categoriesWithProductInfo);
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch categories with product info' });
+  }
+  }
+
   async change(req: Request, res: Response): Promise<void> {
-    try{
+    try {
       const { categoryId } = req.params;
       const { icon, name } = req.body;
 
-      const existsCategory = await Category.findOne({name})
-      
-      if (existsCategory){
-        res.status(500).json({error: "Você está tentando colocar um nome que já existe em suas categorias!"})
-        return
+      const existsCategory = await Category.findOne({ name });
+
+      if (existsCategory) {
+        res
+          .status(500)
+          .json({
+            error:
+              "Você está tentando colocar um nome que já existe em suas categorias!",
+          });
+        return;
       }
 
       await Category.findByIdAndUpdate(categoryId, { icon, name });
-      
-      res.status(200).json()
 
+      res.status(200).json();
     } catch (error) {
       console.error(error, "Erro no servidor ao editar categoria.");
     }
@@ -70,12 +89,11 @@ class CategoryController {
   async delete(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const deleted = await Category.findByIdAndDelete( id );
+      const deleted = await Category.findByIdAndDelete(id);
 
-      if(deleted){
-        res.status(200).json()
+      if (deleted) {
+        res.status(200).json();
       }
-
     } catch (error) {
       console.error(error, "Erro no servidor ao deletar sua categoria. 🤦‍♂️");
     }

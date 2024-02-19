@@ -32,6 +32,8 @@ router.post("/categories", categoryController.create);
 router.patch("/categories/:categoryId", categoryController.change);
 // listar categorias ✔
 router.get("/categories", categoryController.showAll);
+// listar categorias com quantos produtos tem na categoria ✔
+router.get("/categoriesfull", categoryController.showWithProducts);
 // deletar categoria ✔
 router.delete("/categories/:id", categoryController.delete);
 
