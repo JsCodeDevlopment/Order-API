@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IProduct } from "../../interfaces/IProduct";
 import { Product } from "../models/Product";
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 
 class ProductController {
@@ -78,6 +78,37 @@ class ProductController {
     }
   }
 
+  async change(req: Request, res: Response) {
+    try{
+      const { id } = req.params
+      const { name, description, price, category, ingredients } = req.body
+      const imagePath = req.file?.filename;
+
+      const product = await Product.findById(id)
+      
+      if(product?.imagePath && imagePath){
+        const image = product?.imagePath as string
+        const caminhoImagem = path.resolve(__dirname, "../../../uploads", image);
+        fs.access(caminhoImagem, fs.constants.F_OK, err => {
+          if (!err) {    
+            fs.unlink(caminhoImagem, err => {
+              if(err){console.error(err, "Erro ao deletar imagem antiga.")}
+            })
+          } else {
+            console.error("Arquivo não encontrado.")
+          }
+        })
+      }
+
+      const updatedProduct = await Product.findByIdAndUpdate(id, {name, description, price, category, imagePath, ingredients: JSON.parse(ingredients)})
+
+      res.status(204).json(updatedProduct)
+    } catch (error) {
+      console.error(error, "Erro na alteração das informações do produto.")
+      res.status(500).json({error: "Erro ao alterar produto."})
+    }
+  }
+
   async delete(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
@@ -94,7 +125,15 @@ class ProductController {
       } else {
         const image = productImage?.imagePath as string;
         const caminhoImagem = path.join(__dirname, "../../../uploads", image);
-        await fs.unlink(caminhoImagem);
+        fs.access(caminhoImagem, fs.constants.F_OK, err => {
+          if (!err) {    
+            fs.unlink(caminhoImagem, err => {
+              if(err){console.error(err, "Erro ao deletar imagem antiga.")}
+            })
+          } else {
+            console.error("Arquivo não encontrado.")
+          }
+        })
 
         res.status(200).json();
       }

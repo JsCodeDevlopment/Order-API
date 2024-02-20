@@ -44,6 +44,8 @@ router.post("/products", upload.single("image"), productController.create);
 router.get("/products", productController.showAll);
 // listar produtos pela categoria ✔
 router.get("/products/:categoryId/products",productController.showByCategories);
+// Atualizar produtos ✔
+router.patch("/products/:id", upload.single("image"), productController.change);
 // deletar produto ✔
 router.delete("/products/:id", productController.delete);
 
