@@ -10,9 +10,7 @@ class ProductController {
       const { name, description, price, ingredients, category } = req.body;
       const imagePath = req.file?.filename;
 
-      if (!imagePath) {
-        console.log("o imagePath tá vazio mano");
-      }
+      !imagePath && console.log("o imagePath tá vazio mano");
 
       if (!name && !price) {
         res.status(400).json({
@@ -37,9 +35,7 @@ class ProductController {
         ingredients: ingredients ? JSON.parse(ingredients) : [],
       });
 
-      res
-        .status(201)
-        .json(await Product.findById(product._id).populate("category").exec());
+      res.status(201).json(await Product.findById(product._id).populate("category").exec());
     } catch (error) {
       console.error(error, "Erro na criação dessa categoria. 🤦‍♂️");
     }

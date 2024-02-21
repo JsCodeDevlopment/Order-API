@@ -4,7 +4,7 @@ import { Register } from "../models/Register";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 import { mailSettings } from "../settings/MailSettings";
 
@@ -111,7 +111,15 @@ class RegisterController {
       await Register.findByIdAndDelete(id);
       const image = deleteUser.imagePath
       const caminhoImagem = path.join(__dirname, "../../../uploads", image);
-      await fs.unlink(caminhoImagem);
+      fs.access(caminhoImagem, fs.constants.F_OK, err => {
+        if (!err) {    
+          fs.unlink(caminhoImagem, err => {
+            if(err){console.error(err, "Erro ao deletar imagem antiga.")}
+          })
+        } else {
+          console.error("Arquivo não encontrado.")
+        }
+      })
 
       res.status(200).json();
     } catch (error) {
