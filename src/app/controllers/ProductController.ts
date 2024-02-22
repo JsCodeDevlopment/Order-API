@@ -98,7 +98,7 @@ class ProductController {
 
       const updatedProduct = await Product.findByIdAndUpdate(id, {name, description, price, category, imagePath, ingredients: JSON.parse(ingredients)})
 
-      res.status(204).json(updatedProduct)
+      res.status(200).json(updatedProduct)
     } catch (error) {
       console.error(error, "Erro na alteração das informações do produto.")
       res.status(500).json({error: "Erro ao alterar produto."})

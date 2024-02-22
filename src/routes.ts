@@ -79,4 +79,4 @@ router.get("/verify/:token", loginController.verify);
 // esqueci minha senha ✔
 router.post("/forgot-password", loginController.recover)
 // recuperar senha ✔
-router.post("/reset-password/:token", loginController.reset);
+router.post("/reset-password", loginController.reset);
