@@ -82,25 +82,29 @@ class LoginController {
         to: email,
         subject: "Redefinir Senha",
         html: 
-        `<body style="background-color: #2B2B2B; color: #FFF; font-family: Arial, sans-serif;">
-        <div style="max-width: 600px; margin: 0 auto; padding: 20px; text-align: center;">
-          <div style="padding: 20px;">
-            <img src="https://cdn.discordapp.com/attachments/303213411544596481/1192490948765167778/logo-for-lightBG.png?ex=65a944bd&is=6596cfbd&hm=95ad96d53b597afba7eee8a34ee14ca894f2bd73cc60e45efb4b84b2acfc5d70" alt="Logo" width="200">
-          </div>
-          <h2 style="color: #E6324B;">Redefinição de Senha</h2>
-          <p>Por favor, clique no botão abaixo para redefinir sua senha:</p>
-          <div style="margin-top: 20px; bargin-bottom: 20px;">
-            <a href="${resetLink}" style="text-decoration: none;">
-              <button style="background-color: #E6324B; color: #FFF; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px;">Clique para Redefinir</button>
-            </a>
-          </div>
-          <div style="display: inline-block; margim-top: 40px; background-color: #000; color: #FFF; text-align: center; padding: 10px; position: fixed; bottom: 0; width: 100%;">
-            <p style="color: #E6324B;">PickApp</p>
-            <p>© Todos os direitos reservados.</p>
-            <p>Designed by <a href="https://jonatas-silva-developer.vercel.app/" style="color: #FFF; text-decoration: none;">Jonatas</a></p>
-          </div>
+        `<body style="background-color: #2B2B2B; width: 100%; height: auto; margin: 0; text-align: center; color: #FFF; font-family: Arial, sans-serif;">
+
+        <div style="width: 100%; max-width: 1082px; text-align: center; padding: 20px;">
+            <img src="https://prnt.sc/JFviHo1VXiSO" alt="Logo" width="200px">
         </div>
-      </body>`,
+    
+        <div style="width: 100%; max-width: 1082px; text-align: center; padding: 20px;">
+            <h2 style="color: #E6324B;">Redefinição de Senha</h2>
+            <p>Opa! Falta pouco para você recuperar sua senha, tudo que precisa fazer agora é clicar no botão abaixo e escolher uma nova senha.</p>
+            <div style="padding: 10px; text-align: center;">
+                <a href="${resetLink}" style="text-decoration: none; cursor: pointer;">
+                  <button style="background-color: #E6324B; marim-top: 0; marim-right: auto; marim-bottom: 0; marim-left: auto; color: #FFF; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px;">Clique para Redefinir</button>
+                </a>
+            </div>
+        </div>
+    
+        <div style="height: auto; width: 100%; max-width: 1082px; background-color: #000; color: #FFF; text-align: center; padding: 10px; bottom: 0;">
+        <p style="color: #E6324B;">PickApp</p>
+        <p>© Todos os direitos reservados.</p>
+        <p>Designed by <a href="https://jonatas-silva-developer.vercel.app/" style="color: #FFF; text-decoration: none;">Jonatas</a></p>
+        </div>
+    
+        </body>`,
       });
 
       res.json({
