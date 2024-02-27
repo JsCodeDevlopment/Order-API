@@ -21,4 +21,4 @@ mongoose
       console.log("🏴‍☠️ Server is running on http://localhost:3333");
     });
   })
-  .catch(() => console.log("error to connect at mongodb"));
+  .catch((err) => console.log(err, "error to connect at mongodb"));
