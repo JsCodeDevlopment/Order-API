@@ -77,7 +77,8 @@ class RegisterController {
 
   async change(req: Request, res: Response): Promise<IRegister | undefined> {
     try {
-      const { name, id } = req.body as IRegister;
+      const { name } = req.body as IRegister;
+      const id = req.query.id as string;
       const imagePath = req.file?.filename;
 
       if (!name && !imagePath) {
@@ -85,15 +86,10 @@ class RegisterController {
         return;
       }
 
-      const User = await Register.findById(id) as IRegister
-      if(User.name === name){
-        res.status(400).json({ error: "Não existe motivos para trocar o nome para o mesmo que já está usando." })
-        return
-      }
+      const user = await Register.findById(id) as IRegister
 
-      if (imagePath) {
-        const image = imagePath;
-        const caminhoImagem = path.join(__dirname, "../../../uploads", image);
+      if (user.imagePath && imagePath && imagePath !== user.imagePath) {
+        const caminhoImagem = path.join(__dirname, "../../../uploads", user.imagePath);
         fs.access(caminhoImagem, fs.constants.F_OK, (err) => {
           if (!err) {
             fs.unlink(caminhoImagem, (err) => {
@@ -107,10 +103,11 @@ class RegisterController {
         });
       }
 
-      const changedUser = await Register.findByIdAndUpdate(id, {name, imagePath})
+      const changedUser = await Register.findByIdAndUpdate(id, {name, imagePath: imagePath ?? user.imagePath})
       res.status(200).json(changedUser)
     } catch (error) {
       console.error(error, "Erro no servidor ao buscar os usuários. 🤦‍♂️");
+      res.status(500).json({error: "Erro na request de alteração de dados do usuário."})
     }
   }
 
