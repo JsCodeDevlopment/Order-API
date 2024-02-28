@@ -66,8 +66,10 @@ router.get("/me", AuthMiddleware, userController.me);
 // ----ROTAS REGISTER----
 // criar usuário ✔ OBS: Autenticar email e mandar para email que está tentando cadastrar ✔
 router.post("/register", upload.single("image"), registerController.create);
-// atualizar dados do usuário ✔
+// vizualizar dados do usuário ✔
 router.get("/register", registerController.showAll);
+// atualizar dados do usuário ✔
+router.patch("/register", upload.single("image"), registerController.change);
 // deletar usuário ✔
 router.delete("/register/:id", AuthMiddleware, AdminMiddleware, registerController.delete);
 
