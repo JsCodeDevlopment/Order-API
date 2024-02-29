@@ -86,10 +86,14 @@ class RegisterController {
         return;
       }
 
-      const user = await Register.findById(id) as IRegister
+      const user = (await Register.findById(id)) as IRegister;
 
       if (user.imagePath && imagePath && imagePath !== user.imagePath) {
-        const caminhoImagem = path.join(__dirname, "../../../uploads", user.imagePath);
+        const caminhoImagem = path.join(
+          __dirname,
+          "../../../uploads",
+          user.imagePath
+        );
         fs.access(caminhoImagem, fs.constants.F_OK, (err) => {
           if (!err) {
             fs.unlink(caminhoImagem, (err) => {
@@ -103,11 +107,16 @@ class RegisterController {
         });
       }
 
-      const changedUser = await Register.findByIdAndUpdate(id, {name, imagePath: imagePath ?? user.imagePath})
-      res.status(200).json(changedUser)
+      const changedUser = await Register.findByIdAndUpdate(id, {
+        name,
+        imagePath: imagePath ?? user.imagePath,
+      });
+      res.status(200).json(changedUser);
     } catch (error) {
       console.error(error, "Erro no servidor ao buscar os usuários. 🤦‍♂️");
-      res.status(500).json({error: "Erro na request de alteração de dados do usuário."})
+      res
+        .status(500)
+        .json({ error: "Erro na request de alteração de dados do usuário." });
     }
   }
 
@@ -148,10 +157,25 @@ class RegisterController {
     }
   }
 
-  async recoverKey(req: Request, res: Response) {
+  async updatePassword(req: Request, res: Response): Promise<void | undefined> {
     try {
+      const { lastPassword, NewPassword } = req.body;
+      const userId = req.user.id;
+
+      const user = (await Register.findById(userId)) as IRegister;
+      const match = await bcrypt.compare(lastPassword, user.password);
+      if (!match) {
+        res.status(500).json({ error: "Senha inválida" });
+        return;
+      }
+
+      const newPasswordHashed = await bcrypt.hash(NewPassword, 12);
+      await Register.findByIdAndUpdate(userId, { password: newPasswordHashed });
+      res.status(200).json({ sucess: "Senha alterada com sucesso!" });
     } catch (error) {
       console.error(error, "Erro no servidor ao recuperar senha.");
+      res.status(500).json({error: "Erro na requisição de alteração de senha."})
+      return
     }
   }
 }
