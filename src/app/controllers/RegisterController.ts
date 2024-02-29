@@ -159,7 +159,7 @@ class RegisterController {
 
   async updatePassword(req: Request, res: Response): Promise<void | undefined> {
     try {
-      const { lastPassword, NewPassword } = req.body;
+      const { lastPassword, newPassword } = req.body;
       const userId = req.user.id;
 
       const user = (await Register.findById(userId)) as IRegister;
@@ -169,7 +169,7 @@ class RegisterController {
         return;
       }
 
-      const newPasswordHashed = await bcrypt.hash(NewPassword, 12);
+      const newPasswordHashed = await bcrypt.hash(newPassword, 12);
       await Register.findByIdAndUpdate(userId, { password: newPasswordHashed });
       res.status(200).json({ sucess: "Senha alterada com sucesso!" });
     } catch (error) {

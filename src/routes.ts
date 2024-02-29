@@ -71,7 +71,7 @@ router.get("/register", registerController.showAll);
 // atualizar dados do usuário ✔
 router.patch("/register", upload.single("image"), registerController.change);
 // atualizar senha do usuário ✔
-router.patch("/register/update-password", registerController.updatePassword);
+router.patch("/register/update-password", AuthMiddleware, registerController.updatePassword);
 // deletar usuário ✔
 router.delete("/register/:id", AuthMiddleware, AdminMiddleware, registerController.delete);
 
