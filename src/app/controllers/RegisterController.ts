@@ -122,15 +122,16 @@ class RegisterController {
 
   async delete(req: Request, res: Response): Promise<void | undefined> {
     try {
+      const { id } = req.params;
       const currentUserId = req.user.id;
 
-      const deleteUser = await Register.findById(currentUserId);
+      const deleteUser = await Register.findById(id ? id : currentUserId);
       if (!deleteUser) {
         res.status(401).json({ error: "Usuário que quer deletar não existe." });
         return;
       }
 
-      await Register.findByIdAndDelete(currentUserId);
+      await Register.findByIdAndDelete(id ? id : currentUserId);
       const image = deleteUser.imagePath;
       const caminhoImagem = path.join(__dirname, "../../../uploads", image);
       fs.access(caminhoImagem, fs.constants.F_OK, (err) => {
