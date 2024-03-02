@@ -27,27 +27,27 @@ const upload = multer({
 
 // ----ROTAS CATEGORIA----
 // criar categoria ✔
-router.post("/categories", categoryController.create);
+router.post("/categories", AuthMiddleware, AdminMiddleware, categoryController.create);
 // editar categoria ✔
-router.patch("/categories/:categoryId", categoryController.change);
+router.patch("/categories/:categoryId", AuthMiddleware, AdminMiddleware, categoryController.change);
 // listar categorias ✔
 router.get("/categories", categoryController.showAll);
 // listar categorias com quantos produtos tem na categoria ✔
 router.get("/categoriesfull", categoryController.showWithProducts);
 // deletar categoria ✔
-router.delete("/categories/:id", categoryController.delete);
+router.delete("/categories/:id", AuthMiddleware, AdminMiddleware, categoryController.delete);
 
 // ----ROTAS PRODUTOS----
 // criar produto ✔
-router.post("/products", upload.single("image"), productController.create);
+router.post("/products", AuthMiddleware, AdminMiddleware, upload.single("image"), productController.create);
 // listar produtos ✔
 router.get("/products", productController.showAll);
 // listar produtos pela categoria ✔
 router.get("/products/:categoryId/products",productController.showByCategories);
 // Atualizar produtos ✔
-router.patch("/products/:id", upload.single("image"), productController.change);
+router.patch("/products/:id", AuthMiddleware, AdminMiddleware, upload.single("image"), productController.change);
 // deletar produto ✔
-router.delete("/products/:id", productController.delete);
+router.delete("/products/:id", AuthMiddleware, AdminMiddleware, productController.delete);
 
 // ----ROTAS PEDIDOS----
 // criar pedidos ✔
