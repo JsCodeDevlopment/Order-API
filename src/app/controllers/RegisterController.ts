@@ -103,6 +103,7 @@ class RegisterController {
             });
           } else {
             console.error("Arquivo não encontrado.");
+            return
           }
         });
       }
@@ -120,18 +121,43 @@ class RegisterController {
     }
   }
 
+  async changeRule(req: Request, res: Response): Promise<void | undefined> {
+    try {
+      const { id } = req.params
+      const logedUserId = req.user.id as string
+
+      const logedUser = await Register.findById(logedUserId) as IRegister
+      const user = await Register.findById(id) as IRegister
+
+      if(user.id === logedUser.id) {
+        res.status(400).json({error: "Você não pode rebaixar a si próprio."})
+        return
+      }
+
+      if (user.rule === "USER") {
+        const changedUser = await Register.findByIdAndUpdate(id, {rule: "ADM"})
+        res.status(200).json(changedUser)
+      } else {
+        const changedUser = await Register.findByIdAndUpdate(id, {rule: "USER"})
+        res.status(200).json(changedUser)
+      }
+    } catch (error) {
+      console.error(error, "Erro no servidor ao editar permição do usuário");
+      return
+    }
+  }
+
   async delete(req: Request, res: Response): Promise<void | undefined> {
     try {
       const { id } = req.params;
-      const currentUserId = req.user.id;
 
-      const deleteUser = await Register.findById(id ? id : currentUserId);
+      const deleteUser = await Register.findById(id);
       if (!deleteUser) {
         res.status(401).json({ error: "Usuário que quer deletar não existe." });
         return;
       }
 
-      await Register.findByIdAndDelete(id ? id : currentUserId);
+      await Register.findByIdAndDelete(id);
       const image = deleteUser.imagePath;
       const caminhoImagem = path.join(__dirname, "../../../uploads", image);
       fs.access(caminhoImagem, fs.constants.F_OK, (err) => {
@@ -149,6 +175,7 @@ class RegisterController {
       res.status(200).json();
     } catch (error) {
       console.error(error, "Erro no servidor ao apagar o usuário");
+      return
     }
   }
 
