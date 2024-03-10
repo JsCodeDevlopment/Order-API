@@ -78,7 +78,7 @@ class LoginController {
       user.resetPasswordExpires = new Date(Date.now() + 1000 * 3600);
       await user.save();
 
-      const resetLink = `${process.env.FRONT_BASE_URL}/changepassword?token=${resetPasswordToken}`;
+      const resetLink = `${process.env.FRONT_BASE_URL}/change-password?token=${resetPasswordToken}`;
       await transporter.sendMail({
         to: email,
         subject: "Redefinir Senha",

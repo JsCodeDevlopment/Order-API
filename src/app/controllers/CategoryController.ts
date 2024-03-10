@@ -9,14 +9,14 @@ class CategoryController {
       const { name, icon } = req.body as ICategory;
       if (!name && !icon) {
         res.status(400).json({
-          error: "Nome e/ou icone ausente, esses campos são obrigatórios 🤦‍♂️",
+          error: "Nome e/ou icone ausente, esses campos são obrigatórios",
         });
       }
 
       const categoryExists = await Category.findOne({ name });
       if (categoryExists) {
         res.status(400).json({
-          error: "A categoria que você está tentando criar já existe. 🤦‍♂️",
+          error: "A categoria que você está tentando criar já existe.",
         });
         return;
       }
@@ -66,9 +66,9 @@ class CategoryController {
       const { categoryId } = req.params;
       const { icon, name } = req.body;
 
-      const existsCategory = await Category.findOne({ name });
+      const existsCategory = await Category.findById(categoryId) as ICategory
 
-      if (existsCategory) {
+      if (existsCategory._id === categoryId) {
         res
           .status(500)
           .json({

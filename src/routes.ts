@@ -1,14 +1,14 @@
 import { Router } from "express";
-import path from "node:path";
 import { categoryController } from "./app/controllers/CategoryController";
 import { productController } from "./app/controllers/ProductController";
 import { orderController } from "./app/controllers/OrderController";
-import multer from "multer";
 import { registerController } from "./app/controllers/RegisterController";
 import { AuthMiddleware } from "./app/middlewares/authMiddleware";
 import { loginController } from "./app/controllers/LoginController";
 import { AdminMiddleware } from "./app/middlewares/admMiddleware";
 import { userController } from "./app/controllers/UserController";
+import multer from "multer";
+import path from "node:path";
 
 export const router = Router();
 
@@ -22,8 +22,6 @@ const upload = multer({
     },
   }),
 });
-
-// CASOS DE USOS → São as situações que vou precisar na minha aplicação que aqui vou ter que ter rotas que correspodam a essas ações.
 
 // ----ROTAS CATEGORIA----
 // criar categoria ✔
@@ -56,6 +54,8 @@ router.post("/orders", orderController.create);
 router.get("/orders", orderController.showAll);
 // mudar status dos pedidos ✔
 router.patch("/orders/:orderId", orderController.change);
+// mudar observações dos pedidos ✔
+router.patch("/orders/observations/:orderId", orderController.changeOrderObservations);
 // deletar/cancelar pedidos ✔
 router.delete("/orders/:id", orderController.delete);
 

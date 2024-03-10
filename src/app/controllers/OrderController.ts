@@ -5,7 +5,7 @@ import { Order } from "../models/Order";
 class OrderController {
   async create(req: Request, res: Response): Promise<IOrder | void> {
     try {
-      const { table, createdAt, products } = req.body;
+      const { table, createdAt, products, observations } = req.body;
 
       if (!table && !products) {
         res.status(400).json({
@@ -19,6 +19,7 @@ class OrderController {
         status: "WAITING",
         createdAt,
         products,
+        observations
       });
 
       res.json(order);
@@ -45,11 +46,30 @@ class OrderController {
         });
       }
 
-      const order = await Order.findByIdAndUpdate(orderId, { status });
+      await Order.findByIdAndUpdate(orderId, { status });
 
       res.sendStatus(204)
     } catch (error) {
       console.error(error, "Erro na alteração desse pedido. 🤦‍♂️");
+    }
+  }
+
+  async changeOrderObservations(req: Request, res: Response): Promise<void> {
+    try {
+      const { orderId } = req.params;
+      const { observations } = req.body;
+
+      if (!observations) {
+        res.status(500).json({
+          error: "Observações ausentes, esse campo é obrigatório 🤦‍♂️",
+        });
+      }
+
+      await Order.findByIdAndUpdate(orderId, { observations });
+
+      res.sendStatus(204)
+    } catch (error) {
+      console.error(error, "Erro na alteração das observações desse pedido. 🤦‍♂️");
     }
   }
 

@@ -29,5 +29,9 @@ export const Order = model('Order', new Schema({
             }
         }],
         required: true
+    },
+    observations: {
+        type: String,
+        required: false
     }
 }))
