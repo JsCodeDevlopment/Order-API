@@ -9,6 +9,7 @@ import { AdminMiddleware } from "./app/middlewares/admMiddleware";
 import { userController } from "./app/controllers/UserController";
 import multer from "multer";
 import path from "node:path";
+import { tableController } from "./app/controllers/TableController";
 
 export const router = Router();
 
@@ -58,6 +59,14 @@ router.patch("/orders/:orderId", orderController.change);
 router.patch("/orders/observations/:orderId", orderController.changeOrderObservations);
 // deletar/cancelar pedidos ✔
 router.delete("/orders/:id", orderController.delete);
+
+// ----ROTAS TABLES----
+// rota para criar mesas ✔
+router.post("/table", AuthMiddleware, AdminMiddleware, tableController.create);
+// rota para exibir todas as  mesas ✔
+router.get("/table", tableController.showAll);
+// rota para deletar mesas ✔
+router.delete("/table/:id", AuthMiddleware, AdminMiddleware, tableController.delete);
 
 // ----ROTAS USERS----
 // rota para autenticar quem logar ✔
