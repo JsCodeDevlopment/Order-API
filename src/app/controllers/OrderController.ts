@@ -13,7 +13,6 @@ class OrderController {
             "Mesa, status e/ou produtos ausentes, esses campos são obrigatórios 🤦‍♂️",
         });
       }
-
       const order = await Order.create({
         table,
         status: "WAITING",
@@ -77,8 +76,7 @@ class OrderController {
     try {
       const orders = await Order.find()
         .sort({ createdAt: 1 })
-        .populate("products.product");
-
+        .populate("products.product")
       if (!orders) {
         res.status(500).json({ error: "Erro ao buscar seus pedidos 🤦‍♂️" });
         return;

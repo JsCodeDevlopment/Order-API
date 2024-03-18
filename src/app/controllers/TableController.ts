@@ -14,7 +14,7 @@ class TableController {
       }
       const name = `Mesa: ${tableNumber}`;
 
-      const numberTable = (await Table.find()).filter((table) => table.name === name);
+      const numberTable = (await Table.find()).filter(table => table.name === name);
 
       if (numberTable.length > 0 && name === numberTable[0].name) {
         res.status(400).json({
@@ -30,9 +30,9 @@ class TableController {
     }
   }
 
-  async showAll(req: Request, res: Response): Promise<void> {
+  async showAll(req: Request, res: Response): Promise<ITable[] | void> {
     try {
-      const tables = await Table.find();
+      const tables = await Table.find() as ITable[];
       res.json(tables);
     } catch (error) {
       console.error(error, "Erro ao exibir todas as mesas. 🤦‍♂️");
