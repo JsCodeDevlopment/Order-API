@@ -5,7 +5,8 @@ import { Order } from "../models/Order";
 class OrderController {
   async create(req: Request, res: Response): Promise<IOrder | void> {
     try {
-      const { table, createdAt, products, observations } = req.body;
+      const { table, createdAt, products, observations, userId } = req.body;
+      console.log(userId)
 
       if (!table && !products) {
         res.status(400).json({
@@ -18,8 +19,10 @@ class OrderController {
         status: "WAITING",
         createdAt,
         products,
-        observations
+        observations,
+        creator: userId
       });
+      console.log(order)
 
       res.json(order);
     } catch (error) {
@@ -77,6 +80,7 @@ class OrderController {
       const orders = await Order.find()
         .sort({ createdAt: 1 })
         .populate("products.product")
+        .populate("creator");
       if (!orders) {
         res.status(500).json({ error: "Erro ao buscar seus pedidos 🤦‍♂️" });
         return;

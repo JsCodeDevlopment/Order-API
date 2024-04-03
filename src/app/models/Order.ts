@@ -33,5 +33,10 @@ export const Order = model('Order', new Schema({
     observations: {
         type: String,
         required: false
+    },
+    creator: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Register'
     }
 }))
