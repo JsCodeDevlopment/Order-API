@@ -53,6 +53,8 @@ router.delete("/products/:id", AuthMiddleware, AdminMiddleware, productControlle
 router.post("/orders", orderController.create);
 // listar pedidos ✔
 router.get("/orders", orderController.showAll);
+// listar relatório de pedidos ✔
+router.get("/orders/report", orderController.report);
 // mudar status dos pedidos ✔
 router.patch("/orders/:orderId", orderController.change);
 // mudar observações dos pedidos ✔
