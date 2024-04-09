@@ -8,7 +8,6 @@ class OrderController {
   async create(req: Request, res: Response): Promise<IOrder | void> {
     try {
       const { table, createdAt, products, observations, userId } = req.body;
-      console.log(userId);
 
       if (!table && !products) {
         res.status(400).json({
@@ -99,12 +98,26 @@ class OrderController {
 
   async report(req: Request, res: Response): Promise<void> {
     try {
-      const { startDate, finalDate } = req.query as any;
-      const orders = await Order.find({
-        createdAt: { $gte: startDate, $lte: finalDate },
-      })
-        .sort({ createdAt: 1 })
-        .populate("products.product");
+      const { startDate, finalDate, categoryId } = req.query as any;
+
+      let orders
+
+      if (!categoryId) {
+        orders = await Order.find({
+          createdAt: { $gte: startDate, $lte: finalDate },
+        })
+          .sort({ createdAt: 1 })
+          .populate("products.product");
+      } else {
+        orders = await Order.find({
+          createdAt: { $gte: startDate, $lte: finalDate },
+        })
+          .sort({ createdAt: 1 })
+          .populate("products.product")
+          .where("products.product.category")
+          .equals(categoryId);
+      }
+
       if (!orders) {
         res.status(500).json({ error: "Erro ao buscar seus pedidos 🤦‍♂️" });
         return;
